@@ -1,0 +1,44 @@
+version: '2'
+
+services:
+  nginx-php-fpm:
+    image: "ahpiri/nginx-php-develop:7"
+    volumes:
+    - ./:/usr/share/nginx/html/home
+    ports:
+      - "80:80"
+    networks:
+      vpcbr:
+        ipv4_address: 10.60.0.5
+
+  mysql:
+    image: "mysql/mysql-server:5.7"
+    environment:
+    - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+    - MYSQL_DATABASE=${DB_DATABASE}
+    - MYSQL_ROOT_HOST=%
+    volumes:
+    - /opt/mysql_${APP_NAME}:/var/lib/mysql
+    networks:
+      vpcbr:
+        ipv4_address: 10.60.0.7
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+    - PMA_ARBITRARY=1
+    - MYSQL_USERNAME=root
+    - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+    networks:
+      vpcbr:
+        ipv4_address: 10.60.0.8
+    ports:
+      - 82:80
+
+networks:
+  vpcbr:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 10.60.0.0/16
+        gateway: 10.60.0.1
