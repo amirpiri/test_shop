@@ -50,8 +50,7 @@ class ProductController extends Controller
                 ]
             );
         }
-
-//        dd($q->toSql(), $q->getBindings());
+        
         $data = $q->groupBy('products.id')->paginate(24);
 
         return view('product.product_list', [
